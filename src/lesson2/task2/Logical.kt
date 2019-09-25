@@ -2,7 +2,10 @@
 
 package lesson2.task2
 
+import lesson1.task1.firstDigit
+import lesson1.task1.secondDigit
 import lesson1.task1.sqr
+import lesson1.task1.thirdDigit
 
 /**
  * Пример
@@ -18,8 +21,11 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Четырехзначное число назовем счастливым, если сумма первых двух ее цифр равна сумме двух последних.
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
-fun isNumberHappy(number: Int): Boolean = TODO()
+fun isNumberHappy(number: Int): Boolean {
+    return ((firstDigit(number) + secondDigit(number)) == (thirdDigit(number) + fourthDigit(number)))
+}
 
+fun fourthDigit(number: Int): Int = number / 1000
 /**
  * Простая
  *
@@ -27,7 +33,10 @@ fun isNumberHappy(number: Int): Boolean = TODO()
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = TODO()
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
+    return (x1 == x2) || (y1 == y2) || ((x1 + y1) == (x2 + y2)) ||
+            ((((x1 + y1) - (x2 + y2)) % 2) == 0)
+}
 
 
 /**
@@ -36,7 +45,9 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = TODO()
  * Дан номер месяца (от 1 до 12 включительно) и год (положительный).
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
-fun daysInMonth(month: Int, year: Int): Int = TODO()
+fun daysInMonth(month: Int, year: Int): Int = {
+    
+}
 
 /**
  * Средняя

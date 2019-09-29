@@ -6,6 +6,7 @@ import lesson1.task1.firstDigit
 import lesson1.task1.secondDigit
 import lesson1.task1.sqr
 import lesson1.task1.thirdDigit
+import kotlin.math.sqrt
 
 /**
  * Пример
@@ -45,8 +46,24 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
  * Дан номер месяца (от 1 до 12 включительно) и год (положительный).
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
-fun daysInMonth(month: Int, year: Int): Int = {
-    
+fun daysInMonth(month: Int, year: Int): Int {
+    if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)))
+        if (month == 2) return 29
+        else return when {
+            month == 4 -> 30
+            month == 6 -> 30
+            month == 9 -> 30
+            month == 11 -> 30
+            else -> return 31
+        }
+    else return when {
+        month == 2 -> 28
+        month == 4 -> 30
+        month == 6 -> 30
+        month == 9 -> 30
+        month == 11 -> 30
+        else -> return 31
+    }
 }
 
 /**
@@ -59,7 +76,10 @@ fun daysInMonth(month: Int, year: Int): Int = {
 fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
-): Boolean = TODO()
+): Boolean {
+    val distance = sqrt((sqr(x2) - sqr(x1)) * (sqr(y2) - sqr(y1)))
+    return ((distance + r1) <= r2)
+}
 
 /**
  * Средняя
@@ -70,4 +90,10 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = TODO()
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+    if ((a >= b) && (a >= c))
+        if (((b <= r) && (c <= s)) || ((c <= r) && (b <= s))) return true
+    if ((b >= a) && (b >= c))
+        if (((a <= r) && (c <= s)) || ((c <= r) && (a <= s))) return true
+    return ((c >= a) && (c >= b) && (((b <= r) && (a <= s)) || ((a <= r) && (b <= s))))
+}

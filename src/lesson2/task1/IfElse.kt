@@ -137,7 +137,8 @@ fun rookOrBishopThreatens(
     a = 0
     if ((kingX == rookX) || (kingY == rookY)) a = 1
     if ((kingX != bishopX) && (kingY != bishopY) && (((kingX + kingY) == (bishopX + bishopY)) ||
-                ((((kingX + kingY) - (bishopX + bishopY)) % 2) == 0))) a = 2
+                ((((kingX + kingY) - (bishopX + bishopY)) % 2) == 0))
+    ) a = 2
     if ((a == 2) && ((kingX == rookX) || (kingY == rookY))) a = 3
     return a
 }

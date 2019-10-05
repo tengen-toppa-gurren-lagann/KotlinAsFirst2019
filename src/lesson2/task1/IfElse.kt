@@ -7,6 +7,7 @@ import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
@@ -84,16 +85,16 @@ fun timeForHalfWay(
     t2: Double, v2: Double,
     t3: Double, v3: Double
 ): Double {
-    var t: Double
-    var s1 = t1 * v1
-    var s2 = t2 * v2
-    var s3 = t3 * v3
-    var s = (s1 + s2 + s3) / 2
-    if (s <= s1) t = s / v1
+    val t: Double
+    val s1 = t1 * v1
+    val s2 = t2 * v2
+    val s3 = t3 * v3
+    val s = (s1 + s2 + s3) / 2
+    t = if (s <= s1) s / v1
     else
-        if ((s > s1) && (s <= (s1 + s2))) t = (t1 + (s - s1) / v2)
+        if ((s > s1) && (s <= (s1 + s2))) (t1 + (s - s1) / v2)
         else
-            t = t1 + t2 + (s - s1 - s2) / v3
+            t1 + t2 + (s - s1 - s2) / v3
     return t
 }
 
@@ -111,7 +112,7 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    var a: Int = 0
+    var a = 0
     if ((kingX == rookX1) || (kingY == rookY1)) a = 1
     if ((kingX == rookX2) || (kingY == rookY2)) a = 2
     if ((a == 2) && ((kingX == rookX1) || (kingY == rookY1))) a = 3
@@ -152,9 +153,9 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var side1: Double = 0.0
-    var side2: Double = 0.0
-    var maxSide: Double = 0.0
+    var side1 = 0.0
+    var side2 = 0.0
+    var maxSide = 0.0
     if ((a >= (b + c)) || (b >= (a + c)) || (c >= (a + b))) return -1
     if ((a >= b) && (a >= c)) {
         maxSide = a
@@ -183,4 +184,10 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    if (((c < a) && (a < d)) || ((a < c) && (c < b)))
+        return min(b, d) - max(a, c)
+    if ((a == c) || (a == d) || (b == c) || (b == d))
+        return 0
+    return -1
+}

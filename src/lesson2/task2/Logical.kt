@@ -6,6 +6,7 @@ import lesson1.task1.firstDigit
 import lesson1.task1.secondDigit
 import lesson1.task1.sqr
 import lesson1.task1.thirdDigit
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
@@ -77,7 +78,7 @@ fun circleInside(
     x2: Double, y2: Double, r2: Double
 ): Boolean {
     val distance = sqrt((sqr(x2) - sqr(x1)) * (sqr(y2) - sqr(y1)))
-    return ((distance + r1) <= r2)
+    return (abs(distance + r1) <= abs(r2))
 }
 
 /**

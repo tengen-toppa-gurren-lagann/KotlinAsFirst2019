@@ -138,7 +138,7 @@ fun rookOrBishopThreatens(
     a = 0
     if ((kingX == rookX) || (kingY == rookY)) a = 1
     if ((kingX != bishopX) && (kingY != bishopY) && (((kingX + kingY) == (bishopX + bishopY)) ||
-                ((((kingX + kingY) - (bishopX + bishopY)) % 2) == 0))
+                (((kingX + kingY) - (bishopX + bishopY)) > 0) && ((((kingX + kingY) - (bishopX + bishopY)) % 2) == 0))
     ) a = 2
     if ((a == 2) && ((kingX == rookX) || (kingY == rookY))) a = 3
     return a
@@ -187,7 +187,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     if (((c < a) && (a < d)) || ((a < c) && (c < b)))
         return min(b, d) - max(a, c)
-    if ((a == c) || (a == d) || (b == c) || (b == d))
+    if ((a == c) && (b == d) || (b == c) || (a == d))
         return 0
     return -1
 }

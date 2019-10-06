@@ -22,9 +22,8 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Четырехзначное число назовем счастливым, если сумма первых двух ее цифр равна сумме двух последних.
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
-fun isNumberHappy(number: Int): Boolean {
-    return ((firstDigit(number) + secondDigit(number)) == (thirdDigit(number) + fourthDigit(number)))
-}
+fun isNumberHappy(number: Int): Boolean =
+    ((firstDigit(number) + secondDigit(number)) == (thirdDigit(number) + fourthDigit(number)))
 
 fun fourthDigit(number: Int): Int = number / 1000
 /**
@@ -49,19 +48,19 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
 fun daysInMonth(month: Int, year: Int): Int {
     if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)))
         if (month == 2) return 29
-        else return when {
-            month == 4 -> 30
-            month == 6 -> 30
-            month == 9 -> 30
-            month == 11 -> 30
+        else return when (month) {
+            4 -> 30
+            6 -> 30
+            9 -> 30
+            11 -> 30
             else -> return 31
         }
-    else return when {
-        month == 2 -> 28
-        month == 4 -> 30
-        month == 6 -> 30
-        month == 9 -> 30
-        month == 11 -> 30
+    else return when (month) {
+        2 -> 28
+        4 -> 30
+        6 -> 30
+        9 -> 30
+        11 -> 30
         else -> return 31
     }
 }

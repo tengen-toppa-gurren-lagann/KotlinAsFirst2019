@@ -89,9 +89,15 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    var fibonacci = 1
-    if (n > 2) fibonacci = fib(n - 1) + fib(n - 2)
-    return fibonacci
+    var totalFib: Int
+    var fibPrev = 0
+    var fibN = 1
+    for (i in 0 until (n - 1)) {
+        totalFib = fibPrev + fibN
+        fibPrev = fibN
+        fibN = totalFib
+    }
+    return fibN
 }
 
 /**
@@ -101,7 +107,7 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var k = 2
+    var k = 1
     while ((k % m != 0) || (k % n != 0)) {
         k++
     }
@@ -142,7 +148,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = (n % minDivisor(m) != 0) && (m % minDivisor(n) != 0)
+fun isCoPrime(m: Int, n: Int): Boolean = (n % minDivisor(m) != 0) && (m % minDivisor(n) != 0) || (n == 0) || (m == 0)
 
 /**
  * Простая

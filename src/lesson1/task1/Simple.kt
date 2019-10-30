@@ -2,8 +2,6 @@
 
 package lesson1.task1
 
-import kotlinx.html.DIV
-import lesson5.task1.removeFillerWords
 import kotlin.math.*
 
 /**
@@ -114,10 +112,11 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Сколько денег будет на счету через 3 года (с учётом сложных процентов)?
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
-fun accountInThreeYears(initial: Int, percent: Int): Double =
-    (initial + (initial * percent / 100.0) + (initial + (initial * percent / 100.0)) * percent / 100.0) +
-            (initial + (initial * percent / 100.0) +
-                    (initial + (initial * percent / 100.0)) * percent / 100.0) * percent / 100.0
+fun accountInThreeYears(initial: Int, percent: Int): Double {
+    val firstYear = initial + (initial * percent / 100.0)
+    val secondYear = firstYear + (firstYear * percent / 100.0)
+    return secondYear + (secondYear * percent / 100.0)
+}
 
 /**
  * Простая

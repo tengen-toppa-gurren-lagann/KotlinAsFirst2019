@@ -11,7 +11,7 @@ class Tests {
         assertEquals(listOf<Double>(), sqRoots(-1.0))
         assertArrayEquals(listOf(0.0).toDoubleArray(), sqRoots(0.0).toDoubleArray(), 1e-5)
         assertArrayEquals(listOf(-5.0, 5.0).toDoubleArray(), sqRoots(25.0).toDoubleArray(), 1e-5)
-    }
+    } 
 
     @Test
     @Tag("Example")

@@ -7,7 +7,6 @@ import lesson1.task1.secondDigit
 import lesson1.task1.sqr
 import lesson1.task1.thirdDigit
 import kotlin.math.abs
-import kotlin.math.sqrt
 
 /**
  * Пример
@@ -34,10 +33,8 @@ fun fourthDigit(number: Int): Int = number / 1000
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
-    return (x1 == x2) || (y1 == y2) || ((x1 + y1) == (x2 + y2)) ||
-            ((((x1 + y1) - (x2 + y2)) % 2) == 0)
-}
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
+    (x1 == x2) || (y1 == y2) || (abs(x1 - x2) == abs(y1 - y2))
 
 
 /**
@@ -47,15 +44,7 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
 fun daysInMonth(month: Int, year: Int): Int {
-    if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)))
-        if (month == 2) return 29
-        else return when (month) {
-            4 -> 30
-            6 -> 30
-            9 -> 30
-            11 -> 30
-            else -> return 31
-        }
+    if (((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0))) && (month == 2)) return 29
     else return when (month) {
         2 -> 28
         4 -> 30
@@ -76,9 +65,7 @@ fun daysInMonth(month: Int, year: Int): Int {
 fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
-): Boolean {
-    return ((sqr(x1 - x2) + sqr(y1 - y2) <= sqr(r1 - r2)) && (r2 >= r1))
-}
+): Boolean = ((sqr(x1 - x2) + sqr(y1 - y2) <= sqr(r1 - r2)) && (r2 >= r1))
 
 /**
  * Средняя

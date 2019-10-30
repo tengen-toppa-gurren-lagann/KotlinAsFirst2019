@@ -67,11 +67,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String =
-    if ((age % 10 == 1) && (age != 11) && (age != 111)) "$age год"
-    else
-        if ((age >= 5) && (age <= 20) || (age >= 105) && (age <= 120) || (age % 10 in 5..9) || (age % 10 == 0)) "$age лет"
-        else "$age года"
+fun ageDescription(age: Int): String = when {
+    ((age % 10 == 1) && (age != 11) && (age != 111)) -> "$age год"
+    ((age >= 5) && (age <= 20) || (age >= 105) && (age <= 120) || (age % 10 in 5..9) || (age % 10 == 0)) -> "$age лет"
+    else -> "$age года"
+}
 
 /**
  * Простая
@@ -85,17 +85,15 @@ fun timeForHalfWay(
     t2: Double, v2: Double,
     t3: Double, v3: Double
 ): Double {
-    val t: Double
     val s1 = t1 * v1
     val s2 = t2 * v2
     val s3 = t3 * v3
     val s = (s1 + s2 + s3) / 2
-    t = if (s <= s1) s / v1
-    else
-        if ((s > s1) && (s <= (s1 + s2))) (t1 + (s - s1) / v2)
-        else
-            t1 + t2 + (s - s1 - s2) / v3
-    return t
+    return when {
+        (s <= s1) -> s / v1
+        ((s > s1) && (s <= (s1 + s2))) -> (t1 + (s - s1) / v2)
+        else -> t1 + t2 + (s - s1 - s2) / v3
+    }
 }
 
 /**
@@ -112,11 +110,14 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    var a = 0
-    if ((kingX == rookX1) || (kingY == rookY1)) a = 1
-    if ((kingX == rookX2) || (kingY == rookY2)) a = 2
-    if ((a == 2) && ((kingX == rookX1) || (kingY == rookY1))) a = 3
-    return a
+    val checkOne = (kingX == rookX1) || (kingY == rookY1)
+    val checkTwo = (kingX == rookX2) || (kingY == rookY2)
+    return when {
+        ((checkOne) && (checkTwo)) -> 3
+        (checkOne) -> 1
+        (checkTwo) -> 2
+        else -> 0
+    }
 }
 
 /**
@@ -134,14 +135,14 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
-    var a: Int
-    a = 0
-    if ((kingX == rookX) || (kingY == rookY)) a = 1
-    if ((kingX != bishopX) && (kingY != bishopY) && (((kingX + kingY) == (bishopX + bishopY)) ||
-                (((kingX + kingY) - (bishopX + bishopY)) > 0) && ((((kingX + kingY) - (bishopX + bishopY)) % 2) == 0))
-    ) a = 2
-    if ((a == 2) && ((kingX == rookX) || (kingY == rookY))) a = 3
-    return a
+    val checkOne = (kingX == rookX) || (kingY == rookY)
+    val checkTwo = (abs(kingX - bishopX) == abs(kingY - bishopY))
+    return when {
+        (checkOne && checkTwo) -> 3
+        (checkOne) -> 1
+        (checkTwo) -> 2
+        else -> 0
+    }
 }
 
 /**
@@ -153,27 +154,16 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var side1 = 0.0
-    var side2 = 0.0
-    var maxSide = 0.0
-    if ((a >= (b + c)) || (b >= (a + c)) || (c >= (a + b))) return -1
-    if ((a >= b) && (a >= c)) {
-        maxSide = a
-        side1 = b
-        side2 = c
-    } else if ((b >= a) && (b >= c)) {
-        maxSide = b
-        side1 = a
-        side2 = c
-    } else if ((c >= b) && (c >= a)) {
-        maxSide = c
-        side1 = a
-        side2 = b
+    val maxSide = maxOf(a, b, c)
+    val side1 = minOf(a, b, c)
+    val side2 = ((a + b + c) - (maxSide + side1))
+    return when {
+        (maxSide >= (side1 + side2)) -> -1
+        (sqr(maxSide) < (sqr(side1) + sqr(side2))) -> 0
+        (sqr(maxSide) == (sqr(side1) + sqr(side2))) -> 1
+        (sqr(maxSide) > (sqr(side1) + sqr(side2))) -> 2
+        else -> -2
     }
-    if (sqr(maxSide) < (sqr(side1) + sqr(side2))) return 0
-    if (sqr(maxSide) == (sqr(side1) + sqr(side2))) return 1
-    if (sqr(maxSide) > (sqr(side1) + sqr(side2))) return 2
-    return -2
 }
 
 /**
@@ -185,7 +175,9 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if ((min(b, d) - max(a, c)) >= 0)
-        return min(b, d) - max(a, c)
-    return -1
+    val check = (min(b, d) - max(a, c))
+    return when {
+        check >= 0 -> check
+        else -> -1
+    }
 }

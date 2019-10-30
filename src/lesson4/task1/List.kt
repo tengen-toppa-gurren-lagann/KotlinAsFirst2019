@@ -336,7 +336,7 @@ fun russian(n: Int): String {
     var result = ""
     var cur: Int
     var div: Int
-    val rus1_19_fem: List<String> = listOf(
+    val rus19Fem: List<String> = listOf(
         "",
         "одна ",
         "две ",
@@ -358,7 +358,7 @@ fun russian(n: Int): String {
         "восемнадцать ",
         "девятнадцать "
     )
-    val rus1_19_male: List<String> = listOf(
+    val rus19Male: List<String> = listOf(
         "",
         "один",
         "два",
@@ -412,13 +412,13 @@ fun russian(n: Int): String {
         cur = n % 100000
         div = cur / 1000
         if (div in 0..19) {
-            result += rus1_19_fem[div]
+            result += rus19Fem[div]
             cur = div
         } else {
             cur = div % 10
             div /= 10
             result += rusTens[div]
-            result += rus1_19_fem[cur]
+            result += rus19Fem[cur]
         }
         result += rusTenName[if (cur < 6) cur else 5]
     }
@@ -428,12 +428,12 @@ fun russian(n: Int): String {
     cur %= 100
     div = cur
     if (div in 0..19) {
-        result += rus1_19_male[div]
+        result += rus19Male[div]
     } else {
         cur = div % 10
         div /= 10
         result += rusTens[div]
-        result += rus1_19_male[cur]
+        result += rus19Male[cur]
     }
     return result.removeSuffix(" ")
 }

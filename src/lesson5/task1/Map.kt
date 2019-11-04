@@ -222,7 +222,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     val wordShattered = word.toLowerCase().toSet()
-    val letters = chars.toSet()
+    val letters = chars.map { it.toLowerCase() }.toSet()
     if (wordShattered.intersect(letters) == wordShattered) return true
     return false
 }
@@ -299,7 +299,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     for (firstDigit in 0 until list.size - 1)
         for (secondDigit in firstDigit + 1 until list.size)
             if (list[firstDigit] + list[secondDigit] == number) return Pair(firstDigit, secondDigit)
-    return Pair(-1, -1) 
+    return Pair(-1, -1)
 }
 
 /**

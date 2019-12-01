@@ -72,9 +72,9 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var num: Int = n / 10
+    var num: Int = abs(n) / 10
     var s = 1
-    while (abs(num) > 0) {
+    while (num > 0) {
         num /= 10
         s++
     }
@@ -112,8 +112,8 @@ fun lcm(m: Int, n: Int): Int {
     do {
         if (first > second) first %= second
         else second %= first
-    } while ((first != 0) && (second != 0))
-    return (m * n) / (first + second)
+    } while (first != 0 && second != 0)
+    return m * n / (first + second)
 }
 
 /**

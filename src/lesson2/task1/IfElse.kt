@@ -68,8 +68,8 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String = when {
-    ((age % 10 == 1) && (age != 11) && (age != 111)) -> "$age год"
-    ((age >= 5) && (age <= 20) || (age >= 105) && (age <= 120) || (age % 10 in 5..9) || (age % 10 == 0)) -> "$age лет"
+    age % 10 == 1 && age % 100 != 11 -> "$age год"
+    age % 100 in 5..20 || age % 10 in 5..9 || age % 10 == 0 -> "$age лет"
     else -> "$age года"
 }
 
@@ -90,8 +90,8 @@ fun timeForHalfWay(
     val s3 = t3 * v3
     val s = (s1 + s2 + s3) / 2
     return when {
-        (s <= s1) -> s / v1
-        ((s > s1) && (s <= (s1 + s2))) -> (t1 + (s - s1) / v2)
+        s <= s1 -> s / v1
+        s > s1 && s <= s1 + s2 -> t1 + (s - s1) / v2
         else -> t1 + t2 + (s - s1 - s2) / v3
     }
 }
@@ -110,12 +110,12 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    val checkOne = (kingX == rookX1) || (kingY == rookY1)
-    val checkTwo = (kingX == rookX2) || (kingY == rookY2)
+    val checkOne = kingX == rookX1 || kingY == rookY1
+    val checkTwo = kingX == rookX2 || kingY == rookY2
     return when {
-        ((checkOne) && (checkTwo)) -> 3
-        (checkOne) -> 1
-        (checkTwo) -> 2
+        checkOne && checkTwo -> 3
+        checkOne -> 1
+        checkTwo -> 2
         else -> 0
     }
 }
@@ -135,12 +135,12 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
-    val checkOne = (kingX == rookX) || (kingY == rookY)
-    val checkTwo = (abs(kingX - bishopX) == abs(kingY - bishopY))
+    val checkOne = kingX == rookX || kingY == rookY
+    val checkTwo = abs(kingX - bishopX) == abs(kingY - bishopY)
     return when {
-        (checkOne && checkTwo) -> 3
-        (checkOne) -> 1
-        (checkTwo) -> 2
+        checkOne && checkTwo -> 3
+        checkOne -> 1
+        checkTwo -> 2
         else -> 0
     }
 }
@@ -156,12 +156,12 @@ fun rookOrBishopThreatens(
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val maxSide = maxOf(a, b, c)
     val side1 = minOf(a, b, c)
-    val side2 = ((a + b + c) - (maxSide + side1))
+    val side2 = a + b + c - (maxSide + side1)
     return when {
-        (maxSide >= (side1 + side2)) -> -1
-        (sqr(maxSide) < (sqr(side1) + sqr(side2))) -> 0
-        (sqr(maxSide) == (sqr(side1) + sqr(side2))) -> 1
-        (sqr(maxSide) > (sqr(side1) + sqr(side2))) -> 2
+        maxSide >= (side1 + side2) -> -1
+        sqr(maxSide) < sqr(side1) + sqr(side2) -> 0
+        sqr(maxSide) == sqr(side1) + sqr(side2) -> 1
+        sqr(maxSide) > sqr(side1) + sqr(side2) -> 2
         else -> -2
     }
 }

@@ -283,17 +283,24 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    val friendList = friends.toMutableMap()
-    val allFriends = mutableSetOf<String>()
-    for ((human, pals) in friendList) {
-        allFriends += pals
-        for (i in pals)
-            friendList[human] = handFriends(i)
+    val resultMap = mutableMapOf<String, MutableSet<String>>() // Искомое множество
+    val distantFriends = mutableSetOf<String>() // Множество для непрямых друзей человека
+    for ((human, closeFriends) in friends) { // Проходим циклом по всем людям
+        resultMap[human] = closeFriends.toMutableSet() // Определяем прямых друзей человека
+        if (resultMap[human] != null) { // Если у человека есть прямые друзья, то надо разобраться поглубже
+            do {
+                val nFriends = resultMap[human]!!.size // Определяем сколько у человека прямых друзей
+                for (friend in resultMap.getValue(human)) { // Проходим циклом по всем его прямым друзьям
+                    if (friends[friend] != null) distantFriends.addAll(friends.getValue(friend).filter { it != human }) // И добавляем в друзья ЭТОГО человека всех остальных друзей
+                    else resultMap[friend] = mutableSetOf() // Если у этого человека нет непрямых друзей
+                }
+                resultMap.getValue(human).addAll(distantFriends) // Добавляем к результату непрямых друзей
+            } while (nFriends < resultMap[human]!!.size) // Проходим по всем прямым друзьям очередного человека
+        }
     }
+    return resultMap
 }
-fun handFriends(human: String): Set<String> {
 
-}
 /**
  * Сложная
  *
@@ -340,8 +347,41 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    for (i in 0 until treasures.size)
-        for (j in 0 until capacity) {
-            var weight = treasures.getValue(treasures, j.).first
+    val resultSet = mutableSetOf<String>() // искомое множество
+    val valuesTable =
+        MutableList(treasures.size + 1) { MutableList(capacity + 1) { 0 } } // Создаем двумерный массив (количество/вес сокровищ), заполняем нулями
+    var weight: Int // масса предмета
+    var value: Int  // ценность предмета
+    // Заполняем рюкзак
+    for (i in 1..treasures.size) {
+        for (j in 0..capacity) {
+            weight = treasures.getValue(item(treasures, i)).first
+            value = treasures.getValue(item(treasures, i)).second
+            if (weight > j) { // предмет не помещается
+                valuesTable[i][j] = valuesTable[i - 1][j] // не кладем предмет в рюкзак
+            } else { // предмет помещается
+                valuesTable[i][j] = maxOf(
+                    (valuesTable[i - 1][j - weight] + value),
+                    valuesTable[i - 1][j]
+                ) // кладем предмет в рюкзак если это выгодно
+            }
         }
+    }
+    // Ищем какие предметы мы положили
+//  var curValue = valuesTable[treasures.size-1][capacity]
+    var curSize = capacity
+    for (i in treasures.size downTo 1) {
+        if (valuesTable[i][curSize] != valuesTable[i - 1][curSize]) {
+            resultSet.add(item(treasures, i))
+            curSize -= treasures.getValue(item(treasures, i)).first
+        }
+    }
+    return resultSet
+}
+
+fun item(map: Map<String, Pair<Int, Int>>, index: Int): String {
+    // Ищем в списке предмет с заданным индексом, возвращаем его имя
+    var i = 0
+    for ((name, _) in map) if (++i == index) return name
+    return ""
 }

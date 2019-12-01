@@ -183,7 +183,13 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO()
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val stocksPrices = mutableMapOf<String, MutableList<Double>>()
+    for ((name, price) in stockPrices) {
+        stocksPrices.getOrPut(name, { mutableListOf() }).add(price)
+    }
+    return stocksPrices.mapValues { it.value.sum() / it.value.size }
+}
 
 /**
  * Средняя
@@ -204,7 +210,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     var minValue = Double.MAX_VALUE
     var cheapiest: String? = null
     for ((Mark, typePrice) in stuff)
-        if ((typePrice.first == kind) && (typePrice.second < minValue)) {
+        if ((typePrice.first == kind) && (typePrice.second <= minValue)) {
             minValue = typePrice.second
             cheapiest = Mark
         }
@@ -276,8 +282,18 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val friendList = friends.toMutableMap()
+    val allFriends = mutableSetOf<String>()
+    for ((human, pals) in friendList) {
+        allFriends += pals
+        for (i in pals)
+            friendList[human] = handFriends(i)
+    }
+}
+fun handFriends(human: String): Set<String> {
 
+}
 /**
  * Сложная
  *
@@ -323,4 +339,9 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    for (i in 0 until treasures.size)
+        for (j in 0 until capacity) {
+            var weight = treasures.getValue(treasures, j.).first
+        }
+}

@@ -139,10 +139,8 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    if (list.size != 0) {
-        val mean = mean(list)
-        for (i in 0 until list.size) list[i] -= mean
-    }
+    val mean = mean(list)
+    for (i in 0 until list.size) list[i] -= mean
     return list
 }
 
@@ -169,7 +167,11 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     var poly = 0
-    for (i in 0 until p.size) poly += (p[i] * x.toDouble().pow(i).toInt())
+    var poweredX = 1
+    for (i in 0 until p.size) {
+        poly += (p[i] * poweredX)
+        poweredX *= x
+    }
     return poly
 }
 
@@ -202,9 +204,18 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 fun factorize(n: Int): List<Int> {
     var changeN = n
     val multipliers = mutableListOf<Int>()
+    var prevMinDivisor = 2
+    var curMinDivisor: Int
     do {
-        multipliers += (minDivisor(changeN))
-        changeN /= minDivisor(changeN)
+        curMinDivisor = changeN
+        for (k in prevMinDivisor..sqrt(changeN.toDouble()).toInt())
+            if (changeN % k == 0) {
+                curMinDivisor = k
+                break
+            }
+        multipliers += (curMinDivisor)
+        changeN /= curMinDivisor
+        prevMinDivisor = curMinDivisor
     } while (changeN > 1)
     return multipliers
 }
@@ -217,7 +228,7 @@ fun factorize(n: Int): List<Int> {
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
 fun factorizeToString(n: Int): String {
-    val list: List<Int> = factorize(n).sorted()
+    val list: List<Int> = factorize(n)
     return list.joinToString(separator = "*")
 }
 
@@ -250,13 +261,13 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    var basedNum = ""
+    val basedNum = mutableListOf<String>()
     var changeN = n
     do {
         basedNum += numToLetter(changeN % base)
         changeN /= base
     } while (changeN > 0)
-    return basedNum.reversed()
+    return basedNum.joinToString("").reversed()
 }
 
 fun numToLetter(number: Int): String {
@@ -273,8 +284,10 @@ fun numToLetter(number: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var sum = 0
+    var poweredI = base.toDouble().pow(digits.size - 1).toInt()
     for (i in 0 until digits.size) {
-        sum += (digits[i] * (base.toDouble().pow(digits.size - i - 1)).toInt())
+        sum += (digits[i] * poweredI)
+        poweredI /= base
     }
     return sum
 }
@@ -307,21 +320,21 @@ fun letterToNum(number: Char): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 fun roman(n: Int): String {
-    var result = ""
+    val result = mutableListOf<String>()
     var div: Int = n / 1000
     var cur: Int = n % 1000
     val romanDigits: List<String> = listOf("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX")
     val romanTens: List<String> = listOf("", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC")
     val romanHundreds: List<String> = listOf("", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM")
-    for (i in 1..div) result += "M"
+    for (i in 1..div) result.add("M")
     div = cur / 100
-    result += romanHundreds[div]
+    result.add(romanHundreds[div])
     cur %= 100
     div = cur / 10
-    result += romanTens[div]
+    result.add(romanTens[div])
     cur %= 10
-    result += romanDigits[cur]
-    return result
+    result.add(romanDigits[cur])
+    return result.joinToString("")
 }
 
 /**
@@ -332,79 +345,9 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    var result = ""
+    val result = mutableListOf<String>()
     var cur: Int
     var div: Int
-    val rus19Fem: List<String> = listOf(
-        "",
-        "одна ",
-        "две ",
-        "три ",
-        "четыре ",
-        "пять ",
-        "шесть ",
-        "семь ",
-        "восемь ",
-        "девять ",
-        "десять ",
-        "одиннадцать ",
-        "двенадцать ",
-        "тринадцать ",
-        "четырнадцать ",
-        "пятнадцать ",
-        "шестнадцать ",
-        "семнадцать ",
-        "восемнадцать ",
-        "девятнадцать "
-    )
-    val rus19Male: List<String> = listOf(
-        "",
-        "один",
-        "два",
-        "три",
-        "четыре",
-        "пять",
-        "шесть",
-        "семь",
-        "восемь",
-        "девять",
-        "десять",
-        "одиннадцать",
-        "двенадцать",
-        "тринадцать",
-        "четырнадцать",
-        "пятнадцать",
-        "шестнадцать",
-        "семнадцать",
-        "восемнадцать",
-        "девятнадцать"
-    )
-    val rusTens: List<String> = listOf(
-        "",
-        "десять ",
-        "двадцать ",
-        "тридцать ",
-        "сорок ",
-        "пятьдесят ",
-        "шестьдесят ",
-        "семьдесят ",
-        "восемьдесят ",
-        "девяносто "
-    )
-    val rusHundreds: List<String> = listOf(
-        "",
-        "сто ",
-        "двести ",
-        "триста ",
-        "четыреста ",
-        "пятьсот ",
-        "шестьсот ",
-        "семьсот ",
-        "восемьсот ",
-        "девятьсот "
-    )
-    val rusTenName: List<String> = listOf("тысяч ", "тысяча ", "тысячи ", "тысячи ", "тысячи ", "тысяч ")
-
     if (n > 999) {
         div = n / 100000
         result += rusHundreds[div]
@@ -434,5 +377,75 @@ fun russian(n: Int): String {
         result += rusTens[div]
         result += rus19Male[cur]
     }
-    return result.removeSuffix(" ")
+    return result.filter { it != "" }.joinToString(" ")
 }
+
+val rus19Fem: List<String> = listOf(
+    "",
+    "одна",
+    "две",
+    "три",
+    "четыре",
+    "пять",
+    "шесть",
+    "семь",
+    "восемь",
+    "девять",
+    "десять",
+    "одиннадцать",
+    "двенадцать",
+    "тринадцать",
+    "четырнадцать",
+    "пятнадцать",
+    "шестнадцать",
+    "семнадцать",
+    "восемнадцать",
+    "девятнадцать"
+)
+val rus19Male: List<String> = listOf(
+    "",
+    "один",
+    "два",
+    "три",
+    "четыре",
+    "пять",
+    "шесть",
+    "семь",
+    "восемь",
+    "девять",
+    "десять",
+    "одиннадцать",
+    "двенадцать",
+    "тринадцать",
+    "четырнадцать",
+    "пятнадцать",
+    "шестнадцать",
+    "семнадцать",
+    "восемнадцать",
+    "девятнадцать"
+)
+val rusTens: List<String> = listOf(
+    "",
+    "десять",
+    "двадцать",
+    "тридцать",
+    "сорок",
+    "пятьдесят",
+    "шестьдесят",
+    "семьдесят",
+    "восемьдесят",
+    "девяносто"
+)
+val rusHundreds: List<String> = listOf(
+    "",
+    "сто",
+    "двести",
+    "триста",
+    "четыреста",
+    "пятьсот",
+    "шестьсот",
+    "семьсот",
+    "восемьсот",
+    "девятьсот"
+)
+val rusTenName: List<String> = listOf("тысяч", "тысяча", "тысячи", "тысячи", "тысячи", "тысяч")

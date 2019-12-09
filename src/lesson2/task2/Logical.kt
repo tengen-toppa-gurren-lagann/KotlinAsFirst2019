@@ -7,6 +7,7 @@ import lesson1.task1.secondDigit
 import lesson1.task1.sqr
 import lesson1.task1.thirdDigit
 import kotlin.math.abs
+import kotlin.math.max
 
 /**
  * Пример
@@ -77,9 +78,6 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    if ((a >= b) && (a >= c))
-        if (((b <= r) && (c <= s)) || ((c <= r) && (b <= s))) return true
-    if ((b >= a) && (b >= c))
-        if (((a <= r) && (c <= s)) || ((c <= r) && (a <= s))) return true
-    return ((c >= a) && (c >= b) && (((b <= r) && (a <= s)) || ((a <= r) && (b <= s))))
+    val littleSides = listOf(a + b + c - maxOf(a, b, c) - minOf(a, b, c), minOf(a, b, c))
+    return littleSides[1] < r && littleSides[2] < s || littleSides[1] < s && littleSides[2] < r
 }

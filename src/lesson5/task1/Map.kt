@@ -2,7 +2,6 @@
 
 package lesson5.task1
 
-import lesson1.task1.numberRevert
 
 /**
  * Пример
@@ -94,7 +93,7 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val change = mutableMapOf<Int, MutableList<String>>()
-    grades.forEach { (student, mark) ->
+    for ((student, mark) in grades) {
         change.getOrPut(mark, { mutableListOf() }).add(student)
     }
     return change
@@ -111,7 +110,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
-    a.forEach { (key, cell) ->
+    for ((key, cell) in a) {
         if (cell != b[key]) return false
     }
     return true
@@ -132,7 +131,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  *     -> a changes to mutableMapOf() aka becomes empty
  */
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
-    b.forEach { (key, cell) ->
+    for ((key, cell) in b) {
         if (a[key] == cell) a.remove(key)
     }
 }
@@ -166,7 +165,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val phoneBook: MutableMap<String, String> = mapA.toMutableMap()
     for ((company, number) in mapB) {
-        if (phoneBook[company] != number && phoneBook[company] != null)
+        if (phoneBook[company] != number)
             phoneBook[company] = phoneBook[company] + ", " + number
         else phoneBook[company] = number
     }
@@ -209,10 +208,10 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var minValue = Double.MAX_VALUE
     var cheapiest: String? = null
-    for ((Mark, typePrice) in stuff)
+    for ((brand, typePrice) in stuff)
         if ((typePrice.first == kind) && (typePrice.second <= minValue)) {
             minValue = typePrice.second
-            cheapiest = Mark
+            cheapiest = brand
         }
     return cheapiest
 }
@@ -282,24 +281,26 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
+
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val resultMap = mutableMapOf<String, MutableSet<String>>() // Искомое множество
     val distantFriends = mutableSetOf<String>() // Множество для непрямых друзей человека
     for ((human, closeFriends) in friends) { // Проходим циклом по всем людям
         resultMap[human] = closeFriends.toMutableSet() // Определяем прямых друзей человека
-        if (resultMap[human] != null) { // Если у человека есть прямые друзья, то надо разобраться поглубже
-            do {
-                val nFriends = resultMap[human]!!.size // Определяем сколько у человека прямых друзей
-                for (friend in resultMap.getValue(human)) { // Проходим циклом по всем его прямым друзьям
-                    if (friends[friend] != null) distantFriends.addAll(friends.getValue(friend).filter { it != human }) // И добавляем в друзья ЭТОГО человека всех остальных друзей
-                    else resultMap[friend] = mutableSetOf() // Если у этого человека нет непрямых друзей
-                }
-                resultMap.getValue(human).addAll(distantFriends) // Добавляем к результату непрямых друзей
-            } while (nFriends < resultMap[human]!!.size) // Проходим по всем прямым друзьям очередного человека
+        distantFriends.clear() // Очищаем список непрямых друзей для очередного человека
+        for (friend in resultMap[human]!!) { // Проходим по всем прямым друзьям
+            if (friends[friend] != null) { // Если у очередного прямого друга есть свои друзья,
+                distantFriends.addAll(friends.getValue(friend)) // то добавляем их к множеству непрямых друзей
+            } else resultMap[friend] = mutableSetOf<String>()   // иначе одинокого человека добавляем к искомому множеству с пустым списком друзей
         }
+        resultMap[human]!!.addAll(distantFriends) // Добавляем непрямых друзей в список друзей человека
+    }
+    for ((key, value) in resultMap) { // Удаляем себя из списка своих друзей
+        if (key in value) value.remove(key)
     }
     return resultMap
 }
+
 
 /**
  * Сложная
@@ -319,9 +320,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (firstDigit in 0 until list.size - 1)
-        for (secondDigit in firstDigit + 1 until list.size)
-            if (list[firstDigit] + list[secondDigit] == number) return Pair(firstDigit, secondDigit)
+    var pairList: List<Int>
+    for (element in list) {
+        pairList = list.filter { (it + element == number) && it != element }
+        if (pairList.isNotEmpty()) {
+            return Pair(list.indexOf(element), list.indexOf(pairList[0]))
+        }
+    }
     return Pair(-1, -1)
 }
 

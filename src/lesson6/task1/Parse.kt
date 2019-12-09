@@ -3,7 +3,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
-import lesson3.task1.digitCount
+import java.lang.IllegalArgumentException
 
 /**
  * Пример
@@ -222,7 +222,17 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    if (!(expression.matches(Regex("""(\d+\s[+-]\s)*\d+""")))) throw IllegalArgumentException()
+    val expressionToCalculate = expression.split(" ")
+    var result = expressionToCalculate[0].toInt()
+    for (i in 2 until expressionToCalculate.size step 2) {
+        val digit = expressionToCalculate[i].toInt()
+        if (expressionToCalculate[i - 1] == "+") result += digit
+        else result -= digit
+    }
+    return result
+}
 
 /**
  * Сложная

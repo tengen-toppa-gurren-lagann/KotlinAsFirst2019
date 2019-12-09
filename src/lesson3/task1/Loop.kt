@@ -3,10 +3,7 @@
 package lesson3.task1
 
 import lesson1.task1.firstDigit
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 /**
  * Пример
@@ -113,7 +110,7 @@ fun lcm(m: Int, n: Int): Int {
         if (first > second) first %= second
         else second %= first
     } while (first != 0 && second != 0)
-    return m * n / (first + second)
+    return m / (first + second) * n
 }
 
 /**
@@ -122,11 +119,11 @@ fun lcm(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var k = 2
-    while (n % k != 0) {
-        k++
-    }
-    return k
+    for (k in 2..sqrt(n.toDouble()).toInt())
+        when {
+            n % k == 0 -> return k
+        }
+    return n
 }
 
 /**
@@ -135,12 +132,10 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var maxdiv = 1
-    for (k in 2 until n) {
-        if (n % k == 0)
-            maxdiv = k
+    for (k in (n.toDouble().toInt() / 2).downTo(2)) when {
+        n % k == 0 -> return k
     }
-    return maxdiv
+    return 1
 }
 
 /**
@@ -150,7 +145,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = (m * n) / lcm(m, n) == 1
+fun isCoPrime(m: Int, n: Int): Boolean = (m * n) == lcm(m, n)
 
 /**
  * Простая
@@ -163,7 +158,7 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
     var doubleK: Double
     for (i in m..n) {
         doubleK = i.toDouble()
-        if (sqrt(doubleK) % 1.0 == 0.0) {
+        if (sqrt(doubleK) - truncate(sqrt(doubleK)) < Double.MIN_VALUE) {
             return true
         }
     }
@@ -212,22 +207,16 @@ fun collatzSteps(x: Int): Int {
  */
 fun sin(x: Double, eps: Double): Double {
     var currentTerm: Double
-    var xx: Double = x
+    val xx: Double = x % (2 * PI)
     var sum = 0.0
     var power = 1
-    var plusminus = -1
-    while (xx > (2 * PI)) {
-        xx -= (2 * PI)
-    }
-    while (xx < (-2 * PI)) {
-        xx += (2 * PI)
-    }
+    var plusMinus = -1
     currentTerm = xx
     while (abs(currentTerm) >= abs(eps)) {
         sum += currentTerm
         power += 2
-        currentTerm = ((plusminus) * xx.pow(power) / factorial(power))
-        plusminus *= (-1)
+        currentTerm = ((plusMinus) * xx.pow(power) / factorial(power))
+        plusMinus *= (-1)
     }
     return sum
 }
@@ -245,26 +234,15 @@ fun cos(x: Double, eps: Double): Double {
     var nextTerm: Double = (x)
     var sum = 1.0
     var power = 0
-    var plusminus = -1
-    val simpleX = simpliar(x)
+    var plusMinus = -1
+    val simpleX = x % (2 * PI)
     while (abs(nextTerm) >= abs(eps)) {
         power += 2
-        nextTerm = ((plusminus) * simpleX.pow(power) / factorial(power))
-        plusminus *= (-1)
+        nextTerm = ((plusMinus) * simpleX.pow(power) / factorial(power))
+        plusMinus *= (-1)
         sum += nextTerm
     }
     return sum
-}
-
-fun simpliar(nextTerm: Double): Double {
-    var x = nextTerm
-    while (x > (2 * PI)) {
-        x -= (2 * PI)
-    }
-    while (x < (-2 * PI)) {
-        x += (2 * PI)
-    }
-    return x
 }
 
 /**
@@ -277,7 +255,7 @@ fun simpliar(nextTerm: Double): Double {
 fun revert(n: Int): Int {
     var fromFinish = n
     var swap = 0
-    var rule = digitCount(n)
+    var rule = digitNumber(n)
     var digit: Int
     while (rule > 0) {
         rule -= 1
@@ -333,7 +311,7 @@ fun squareSequenceDigit(n: Int): Int {
     do {
         num = (raise * raise)
         raise++
-        s += digitCount(num)
+        s += digitNumber(num)
         prevNum = num
     } while (s < n)
     s = s - n + 1
@@ -341,16 +319,6 @@ fun squareSequenceDigit(n: Int): Int {
         prevNum /= 10
     }
     return prevNum % 10
-}
-
-fun digitCount(x: Int): Int {
-    var counter = 1
-    var number = x
-    while (number / 10 > 0) {
-        number /= 10
-        counter++
-    }
-    return counter
 }
 
 /**
@@ -370,7 +338,7 @@ fun fibSequenceDigit(n: Int): Int {
     do {
         num = fib(raise)
         raise++
-        s += digitCount(num)
+        s += digitNumber(num)
         prevNum = num
     } while (s < n)
     s = s - n + 1

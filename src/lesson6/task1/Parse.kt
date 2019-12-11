@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import lesson3.task1.digitNumber
 import java.lang.IllegalArgumentException
 
 /**
@@ -307,4 +308,73 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val result = MutableList(cells) { 0 }
+    val cmdNum = commands.length
+    var curCmdIndex = 0
+    var cmdCount = 0
+    var lBracket: Int
+    var rBracket: Int
+    var bracketsCnt: Int
+    var curCell: Int = cells / 2
+    var curPos: Int
+    bracketsCnt = 0
+    for (ch in commands) {
+        if (ch == '[') bracketsCnt++
+        if (ch == ']') bracketsCnt--
+        if (bracketsCnt < 0) throw IllegalArgumentException()
+    }
+    if (bracketsCnt != 0) throw IllegalArgumentException()
+    if (!(commands.matches(Regex("""[-+><\[\] ]+""")))) throw IllegalArgumentException()
+    while (curCmdIndex < cmdNum && cmdCount < limit) {
+        when (commands[curCmdIndex]) {
+            ' ' -> curCmdIndex++
+            '>' -> {
+                if (++curCell >= cells) throw IllegalStateException()
+                else curCmdIndex++
+            }
+            '<' -> {
+                if (--curCell < 0) throw IllegalStateException()
+                else curCmdIndex++
+            }
+            '+' -> {
+                result[curCell]++
+                curCmdIndex++
+            }
+            '-' -> {
+                result[curCell]--
+                curCmdIndex++
+            }
+            '[' -> {
+                // Сначала ищем парную закрывающую скобку
+                lBracket = curCmdIndex
+                bracketsCnt = 1
+                curPos = lBracket
+                do {
+                    curPos++
+                    if (commands[curPos] == '[') bracketsCnt++
+                    if (commands[curPos] == ']') bracketsCnt--
+                } while (bracketsCnt != 0)
+                rBracket = curPos
+                if (result[curCell] == 0) curCmdIndex = rBracket + 1
+                else curCmdIndex++
+            }
+            ']' -> {
+                // Сначала ищем парную открывающую скобку
+                rBracket = curCmdIndex
+                bracketsCnt = -1
+                curPos = rBracket
+                do {
+                    curPos--
+                    if (commands[curPos] == '[') bracketsCnt++
+                    if (commands[curPos] == ']') bracketsCnt--
+                } while (bracketsCnt != 0)
+                lBracket = curPos
+                if (result[curCell] != 0) curCmdIndex = lBracket + 1
+                else curCmdIndex++
+            }
+        }
+        cmdCount++ // Исполнили команду, инкрементируем счетчик
+    }
+    return result
+}

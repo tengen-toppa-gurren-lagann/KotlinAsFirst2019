@@ -78,6 +78,6 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    val littleSides = listOf(a + b + c - maxOf(a, b, c) - minOf(a, b, c), minOf(a, b, c))
-    return littleSides[1] < r && littleSides[2] < s || littleSides[1] < s && littleSides[2] < r
+    val littleSides = listOf(minOf(a, b, c), a + b + c - maxOf(a, b, c) - minOf(a, b, c))
+    return littleSides[0] <= r && littleSides[1] <= s || littleSides[0] <= s && littleSides[1] <= r
 }

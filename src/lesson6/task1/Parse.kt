@@ -128,7 +128,7 @@ fun dateDigitToStr(digital: String): String {
         "ноября",
         "декабря"
     )
-    if (!digital.matches(Regex("""(\d{1,2}\.){2}\d+"""))) return ""
+    if (!digital.matches(Regex("""(\d{1,2}\.){2}\d{4,}"""))) return ""
     val day = pieces[0].toInt()
     val month = if (pieces[1].toInt() > 0) months[pieces[1].toInt() - 1] else return ""
     val year = pieces[2].toInt()

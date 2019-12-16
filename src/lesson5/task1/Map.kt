@@ -165,9 +165,11 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val phoneBook: MutableMap<String, String> = mapA.toMutableMap()
     for ((company, number) in mapB) {
+        if (phoneBook[company] == null) {
+            phoneBook[company] = number
+        }
         if (phoneBook[company] != number)
             phoneBook[company] = phoneBook[company] + ", " + number
-        else phoneBook[company] = number
     }
     return phoneBook
 }

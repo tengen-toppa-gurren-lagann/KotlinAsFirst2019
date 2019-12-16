@@ -90,7 +90,7 @@ fun sibilants(inputName: String, outputName: String) {
     for (line in File(inputName).readLines()) {
         if (line.isNotEmpty()) {
             val newLine = line.toCharArray()
-            for (i in 0 until line.length) {
+            for (i in 0 until line.length - 1) {
                 if (marker.contains(line[i]) && wrong.contains(line[i + 1]))
                     newLine[i + 1] = right[wrong.indexOf(line[i + 1])]
             }

@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import kotlin.math.pow
 
 /**
  * Пример
@@ -249,7 +250,28 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val result = File(outputName).bufferedWriter()
+    var maxLength = 0
+    val wordsList = mutableListOf<String>()
+    var lettersList: List<Char>
+    var lettersSet: Set<Char>
+    for (line in File(inputName).readLines()) {  // Проходим по всем строкам словаря
+        lettersList = line.toLowerCase().toCharArray().toList()
+        lettersSet = line.toLowerCase().toCharArray().toSet()
+        if (lettersList.size == lettersSet.size) {
+            if (line.length == maxLength) wordsList.add(line)
+            else if (line.length > maxLength) {
+                wordsList.clear()
+                wordsList.add(line)
+                maxLength = line.length
+            }
+        }
+    }
+    for (i in wordsList.indices) {
+        result.write(wordsList[i])
+        if (i < wordsList.size - 1) result.write(", ") // Если слово не последнее в списке, то выводим запятую
+    }
+    result.close()
 }
 
 /**
@@ -496,6 +518,87 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val result = File(outputName).bufferedWriter()
+    val div = lhv / rhv // Частное
+    val digitsLhv = getDigits(lhv)
+    val digitsDiv = getDigits(div)
+    val firstLine: String
+    val secondLine: String
+    var lhvDigitIndex = 0
+    var rhvDigitIndex = 1
+    var spacesCnt = 0
+    val sList = mutableListOf<String>()
+    // Из цифр делимого формируем первое число, из которого будем вычитать (уменьшаемое)
+    var y = 0
+    val l = mutableListOf<Int>()
+    for (digit in digitsLhv) { //Подбираем первое уменьшаемое
+        l.add(digit)
+        y = getNumber(l)
+        lhvDigitIndex++
+        if (y / rhv > 0) break // Нашли число, делящееся на делимое
+    }
+    var x = rhv * digitsDiv[0] // Находим вычитаемое число
+    // Формируем первую и вторую строки (они отличаются от остальных)
+    var s1 = lhv.toString()
+    if (l.size == getDigits(x).size) s1 = " $s1"// При равном количестве цифр добавляем пробел перед уменьшаемым числом
+    firstLine = "$s1 | $rhv"
+    val s2 = "-$x"
+    secondLine = s2.padEnd(s1.length) + "   " + div.toString()
+    sList.add(firstLine)
+    sList.add(secondLine)
+    do { // Цикл формирования строк
+        // Выводим черту под уменьшаемым
+        var line = "".padStart(getDigits(x).size + 1, '-') // Формируем черту из дефисов
+        line = line.padStart(spacesCnt + line.length, ' ') // Добавляем нужное число пробелов
+        sList.add(line)
+        // Находим разность
+        val z = y - x
+        line = z.toString().padStart(line.length, ' ') // Выравниваем разность по правому краю черты
+        // Проверяем, не закончились ли цифры - если закончились, то заканчиваем
+        if (lhvDigitIndex >= digitsLhv.size) {
+            sList.add(line)
+            break
+        }
+        // Добавляем следующую цифру к строке
+        line += digitsLhv[lhvDigitIndex].toString()
+        sList.add(line)
+        // Формируем новые уменьшаемое и вычитаемое для следующего цикла
+        y = z * 10 + digitsLhv[lhvDigitIndex] // Новое уменьшаемое
+        x = rhv * digitsDiv[rhvDigitIndex] // Новое вычитаемое
+        line = ("-$x").padStart(line.length, ' ')  // Добавляем нужное количество пробелов в начале строки
+        sList.add(line)
+
+        spacesCnt = line.length - x.toString().length - 1 // Определяем количество пробелов для следующей строки
+        lhvDigitIndex++
+        rhvDigitIndex++
+
+    } while (lhvDigitIndex <= digitsLhv.size) // Пока не закончатся цифры в делимом
+
+    for (i in sList.indices) { // Выводим список строк
+        result.write(sList[i])
+        if (i < sList.size - 1) result.newLine()
+    }
+    result.close()
+}
+
+// Получение списка цифр целого неотрицательного десятичного числа
+fun getDigits(number: Int): List<Int> {
+    var i = number
+    if (i < 0) throw IllegalArgumentException("Допустимы только неотрицательные числа!")
+    val list = mutableListOf<Int>()
+    do {
+        val digit = i % 10
+        list.add(0, digit)
+        i /= 10
+    } while (i > 0)
+    return list
+}
+
+// Сформировать целое неотрицательное десятичное число из списка цифр
+fun getNumber(digitsList: List<Int>): Int {
+    if (digitsList.isEmpty()) throw IllegalArgumentException("В числе должна быть хотя бы одна цифра!")
+    var s = ""
+    for (digit in digitsList) s += digit // Вычисляем число по цифрам
+    return s.toInt()
 }
 

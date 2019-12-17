@@ -442,7 +442,36 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val result = File(outputName).bufferedWriter()
+    val sProduct = (lhv * rhv).toString()
+    val width = sProduct.length + 1 // Ширина всех выводимых строк (один символ на знаки)
+    val sLhv = lhv.toString()
+    val sRhv = rhv.toString()
+    result.write(sLhv.padStart(width))
+    result.newLine()
+    result.write("*" + sRhv.padStart(width - 1))
+    result.newLine()
+    result.write("".padStart(width, '-'))
+    result.newLine()
+    var div = rhv
+    var cnt = 0
+    var line: String
+    do {
+        val mod = div % 10 // Очередная цифра множителя
+        div /= 10
+        val i = lhv * mod
+        line =
+            if (cnt == 0) i.toString().padStart(width - cnt)
+            else "+" + i.toString().padStart(width - cnt - 1)
+        result.write(line)
+        result.newLine()
+        cnt++
+    } while (div > 0) // Пока не перебрали все цифры множителя
+    result.write("".padStart(width, '-'))
+    result.newLine()
+    result.write(sProduct.padStart(width))
+    result.newLine()
+    result.close()
 }
 
 

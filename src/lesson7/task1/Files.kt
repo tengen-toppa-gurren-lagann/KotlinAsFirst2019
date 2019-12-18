@@ -320,7 +320,88 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val result = File(outputName).bufferedWriter()
+    val htmlStrings = mutableListOf<String>()
+    val htmlText = mutableListOf<String>()
+    var boldCnt = 0
+    var italicCnt = 0
+    var crossCnt = 0
+    var pLineIndex: Int
+    val asterisk = '*'
+    val tilda = '~'
+    htmlText.addAll(listOf("<html>", "<body>"))
+    var lettersList: MutableList<Char>
+    for (line in File(inputName).readLines()) {
+        lettersList = line.toCharArray().toMutableList()
+        // Обрабатываем "*" и "**"
+        var i = lettersList.indexOf(asterisk)
+        while (i >= 0) {
+            if (i < lettersList.size - 1 && lettersList[i + 1] == asterisk) { // Не последний символ в строке, двойная звездочка
+                if (boldCnt > 0) {
+                    lettersList.removeAt(i)
+                    lettersList.removeAt(i)
+                    lettersList.addAll(i, "</b>".toList())
+                    boldCnt--
+                } else {
+                    lettersList.removeAt(i)
+                    lettersList.removeAt(i)
+                    lettersList.addAll(i, "<b>".toList())
+                    boldCnt++
+                }
+            } else {
+                if (italicCnt > 0) {
+                    lettersList.removeAt(i)
+                    lettersList.addAll(i, "</i>".toList())
+                    italicCnt--
+                } else {
+                    lettersList.removeAt(i)
+                    lettersList.addAll(i, "<i>".toList())
+                    italicCnt++
+                }
+            }
+            i = lettersList.indexOf(asterisk)
+        }
+        // Обрабатываем "~~"
+        i = lettersList.indexOf(tilda)
+        while (i >= 0) {
+            if (i < lettersList.size - 1 && lettersList[i + 1] == tilda) {
+                if (crossCnt > 0) {
+                    lettersList.removeAt(i)
+                    lettersList.removeAt(i)
+                    lettersList.addAll(i, "</s>".toList())
+                    crossCnt--
+                } else {
+                    lettersList.removeAt(i)
+                    lettersList.removeAt(i)
+                    lettersList.addAll(i, "<s>".toList())
+                    crossCnt++
+                }
+            }
+            i = lettersList.indexOf(tilda)
+        }
+        htmlStrings.add(String(lettersList.toCharArray()))
+    }
+    // Расставляем абзацы <p></p> в html-тексте
+    pLineIndex = 2 // =2, т.к. в начале файла <html> и <body>
+    for (i in htmlStrings.indices) {
+        if (htmlStrings[i] == "") {
+            htmlText.add(pLineIndex, "<p>")
+            htmlText.add("</p>")
+            pLineIndex =
+                i + 4 // <html> + <body> + <p> + переход
+        } else htmlText.add(htmlStrings[i])
+    }
+    if (pLineIndex != 2 && pLineIndex < htmlText.size) { // Были абзацы и есть ещё строки в конце текста, которые надо обернуть в <p>..</p>
+        htmlText.add(pLineIndex, "<p>")
+        htmlText.add("</p>")
+    }
+    htmlText.addAll(listOf("</body>", "</html>"))
+    // Выводим результат
+    for (i in htmlText.indices) {
+        result.write(htmlText[i])
+        if (i < htmlText.size - 1) result.newLine()
+    }
+    result.close()
 }
 
 /**

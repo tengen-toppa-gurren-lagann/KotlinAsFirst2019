@@ -64,7 +64,7 @@ class Tests {
     @Tag("Normal")
     fun rookTrajectory() {
         assertEquals(listOf(square("g5")), rookTrajectory(square("g5"), square("g5")))
-        rookTrajectory(square("c3"), square("h6")).assertRookTrajectory(square("c3"), square("h6"), 2)
+          rookTrajectory(square("c3"), square("h6")).assertRookTrajectory(square("c3"), square("h6"), 2)
         assertEquals(listOf(square("h2"), square("h7")), rookTrajectory(square("h2"), square("h7")))
     }
 

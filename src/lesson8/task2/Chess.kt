@@ -22,7 +22,11 @@ data class Square(val column: Int, val row: Int) {
      * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
      * Для клетки не в пределах доски вернуть пустую строку
      */
-    fun notation(): String = TODO()
+    fun notation(): String {
+        val sCol = "abcdefgh"
+        if (!inside()) return ""
+        return sCol[column - 1] + row.toString()
+    }
 }
 
 /**
@@ -32,7 +36,12 @@ data class Square(val column: Int, val row: Int) {
  * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
  * Если нотация некорректна, бросить IllegalArgumentException
  */
-fun square(notation: String): Square = TODO()
+fun square(notation: String): Square {
+    val sCol = "abcdefgh"
+    if (!notation.matches(Regex("""[a-h][12345678]"""))) throw IllegalArgumentException("Недопустимая строковая нотация!")
+    return Square(sCol.indexOf(notation[0]) + 1, notation[1].toString().toInt())
+}
+
 
 /**
  * Простая
@@ -57,7 +66,12 @@ fun square(notation: String): Square = TODO()
  * Пример: rookMoveNumber(Square(3, 1), Square(6, 3)) = 2
  * Ладья может пройти через клетку (3, 3) или через клетку (6, 1) к клетке (6, 3).
  */
-fun rookMoveNumber(start: Square, end: Square): Int = TODO()
+fun rookMoveNumber(start: Square, end: Square): Int {
+    if (start == end) return 0
+    if (!start.inside() || !end.inside()) throw IllegalArgumentException()
+    if (start.column == end.column || start.row == end.row) return 1
+    return 2
+}
 
 /**
  * Средняя
@@ -73,7 +87,18 @@ fun rookMoveNumber(start: Square, end: Square): Int = TODO()
  *          rookTrajectory(Square(3, 5), Square(8, 5)) = listOf(Square(3, 5), Square(8, 5))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun rookTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun rookTrajectory(start: Square, end: Square): List<Square> {
+    val pList = mutableListOf<Square>()
+    pList.add(start)
+    if (start == end) return pList
+    if (rookMoveNumber(start, end) == 1) pList.add(end)
+    else {
+        pList.add(Square(start.column, end.row))
+        pList.add(end)
+    }
+    return pList
+}
+
 
 /**
  * Простая

@@ -267,5 +267,30 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * три точки данного множества, либо иметь своим диаметром отрезок,
  * соединяющий две самые удалённые точки в данном множестве.
  */
-fun minContainingCircle(vararg points: Point): Circle = TODO()
+fun minContainingCircle(vararg points: Point): Circle {
+    val pList = points.toList()
+    if (pList.isEmpty()) throw IllegalArgumentException("Задано нулевое множество точек!")
+    if (pList.size == 1) return Circle(pList[0], 0.0) // Точка одна -> круг нулевого радиуса с центром в этой точке
+    if (pList.size == 2) return circleByDiameter(
+        Segment(
+            pList[0],
+            pList[1]
+        )
+    )
+    // Точек три и более
+
+    // Создаём окружность по наиболее удалённым точкам
+    val (first, second) = diameter(*points)
+    var minCircle = circleByDiameter(Segment(first, second))
+
+    // Проходим по всем вариантам окружностей, построенных по ТРЕМ точкам множества
+    for (anyOther in points.filter { it != first && it != second }) { // Исключаем совпадение точек
+        if (!minCircle.contains(anyOther)) minCircle =
+            circleByThreePoints(first, second, anyOther) // Если точка не вошла в круг,
+        // то строим наименьший, основываясь на окружности,
+        // описанной вокруг треугольника
+    }
+    return minCircle
+}
+
 

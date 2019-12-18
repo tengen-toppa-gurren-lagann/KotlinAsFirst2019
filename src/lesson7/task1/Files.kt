@@ -331,7 +331,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val tilda = '~'
     htmlText.addAll(listOf("<html>", "<body>"))
     var lettersList: MutableList<Char>
+    val inputLines = mutableListOf<String>()
     for (line in File(inputName).readLines()) {
+        inputLines.add(line)
         lettersList = line.toCharArray().toMutableList()
         // Обрабатываем "*" и "**"
         var i = lettersList.indexOf(asterisk)
@@ -384,7 +386,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     // Расставляем абзацы <p></p> в html-тексте
     pLineIndex = 2 // =2, т.к. в начале файла <html> и <body>
     for (i in htmlStrings.indices) {
-        if (htmlStrings[i] == "") {
+        if (inputLines[i].isEmpty()) {
             htmlText.add(pLineIndex, "<p>")
             htmlText.add("</p>")
             pLineIndex =

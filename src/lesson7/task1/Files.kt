@@ -600,9 +600,9 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val result = File(outputName).bufferedWriter()
-    val div = lhv / rhv // Частное
+    val quot = lhv / rhv // Частное
     val digitsLhv = getDigits(lhv)
-    val digitsDiv = getDigits(div)
+    val digitsQuot = getDigits(quot)
     val firstLine: String
     val secondLine: String
     var lhvDigitIndex = 0
@@ -618,20 +618,29 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         lhvDigitIndex++
         if (y / rhv > 0) break // Нашли число, делящееся на делимое
     }
-    var x = rhv * digitsDiv[0] // Находим вычитаемое число
+    var x = rhv * digitsQuot[0] // Находим вычитаемое число
+
+    var xLength = getDigits(x).size // Длина вычитаемого
+    var yLength = getDigits(y).size // Длина уменьшаемого
+
     // Формируем первую и вторую строки (они отличаются от остальных)
     var s1 = lhv.toString()
-    if (l.size == getDigits(x).size) s1 = " $s1"// При равном количестве цифр добавляем пробел перед уменьшаемым числом
+    if (l.size == getDigits(x).size) { // При равном количестве цифр в уменьшаемом и вычитаемом добавляем пробел перед уменьшаемым
+        s1 = " $s1"
+        xLength++
+    }
     firstLine = "$s1 | $rhv"
     val s2 = "-$x"
-    secondLine = s2.padEnd(s1.length) + "   " + div.toString()
+    secondLine = s2.padEnd(s1.length) + "   " + quot.toString()
     sList.add(firstLine)
     sList.add(secondLine)
     do { // Цикл формирования строк
-        // Выводим черту под уменьшаемым
-        var line = "".padStart(getDigits(x).size + 1, '-') // Формируем черту из дефисов
+        // Выводим черту под вычитаемым
+        val xyLength = if (xLength > yLength) xLength else yLength
+        var line = "".padStart(xyLength, '-') // Формируем черту из дефисов
         line = line.padStart(spacesCnt + line.length, ' ') // Добавляем нужное число пробелов
-        sList.add(line)
+        sList.add(line) // Добавляем черту
+
         // Находим разность
         val z = y - x
         line = z.toString().padStart(line.length, ' ') // Выравниваем разность по правому краю черты
@@ -645,13 +654,18 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         sList.add(line)
         // Формируем новые уменьшаемое и вычитаемое для следующего цикла
         y = z * 10 + digitsLhv[lhvDigitIndex] // Новое уменьшаемое
-        x = rhv * digitsDiv[rhvDigitIndex] // Новое вычитаемое
+        x = rhv * digitsQuot[rhvDigitIndex] // Новое вычитаемое
         line = ("-$x").padStart(line.length, ' ')  // Добавляем нужное количество пробелов в начале строки
         sList.add(line)
 
-        spacesCnt = line.length - x.toString().length - 1 // Определяем количество пробелов для следующей строки
+        spacesCnt = line.length - y.toString().length // Определяем количество пробелов для следующей строки
+        if (x.toString().length == y.toString().length) spacesCnt--
+
         lhvDigitIndex++
         rhvDigitIndex++
+
+        xLength = getDigits(x).size + 1 // Длина вычитаемого (+1 - на знак '-')
+        yLength = getDigits(y).size   // Длина уменьшаемого
 
     } while (lhvDigitIndex <= digitsLhv.size) // Пока не закончатся цифры в делимом
 

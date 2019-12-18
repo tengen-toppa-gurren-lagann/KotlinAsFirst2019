@@ -205,7 +205,15 @@ fun lineByPoints(a: Point, b: Point): Line = lineBySegment(Segment(a, b))
  *
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
-fun bisectorByPoints(a: Point, b: Point): Line = TODO()
+fun bisectorByPoints(a: Point, b: Point): Line {
+    val seg = Segment(a, b)
+    val segCenter = Point((seg.begin.x + seg.end.x) / 2, (seg.begin.y + seg.end.y) / 2)
+    var alpha: Double
+    alpha = lineBySegment(seg).angle + PI / 2
+    if (alpha < 0) alpha += PI   // Приводим alpha в ОДЗ
+    if (alpha >= PI) alpha -= PI //
+    return Line(segCenter, alpha)
+}
 
 /**
  * Средняя
@@ -221,8 +229,7 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
     var result = Pair(circlesList[0], circlesList[1])
     for (first in 0 until circlesList.size - 1)
         for (second in first + 1 until circlesList.size) {
-            d =
-                circlesList[first].center.distance(circlesList[second].center) - circlesList[first].radius - circlesList[second].radius
+            d = circlesList[first].distance(circlesList[second])
             if (d < minDistance) {
                 result = Pair(circlesList[first], circlesList[second])
                 minDistance = d
@@ -240,7 +247,14 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  * (построить окружность по трём точкам, или
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
-fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = TODO()
+fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
+    val bisector1 = bisectorByPoints(a, b) // Серединный перпендикуляр к одной стороне
+    val bisector2 = bisectorByPoints(b, c) // Серединный перпендикуляр к другой стороне
+    val center =
+        bisector1.crossPoint(bisector2) // Центр описанной окружности = точка пересечения серединных перпендикуляров
+    val radius = sqrt(sqr(center.x - a.x) + sqr(center.y - a.y))
+    return Circle(center, radius)
+}
 
 /**
  * Очень сложная

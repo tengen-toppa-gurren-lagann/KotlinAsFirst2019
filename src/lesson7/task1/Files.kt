@@ -617,6 +617,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         y = getNumber(l)
         lhvDigitIndex++
         if (y / rhv > 0) break // Нашли число, делящееся на делимое
+        else y = lhv
     }
     var x = rhv * digitsQuot[0] // Находим вычитаемое число
 
@@ -630,7 +631,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         xLength++
     }
     firstLine = "$s1 | $rhv"
-    val s2 = "-$x"
+    var s2 = "-$x"
+    s2 = s2.padStart(yLength, ' ')
     secondLine = s2.padEnd(s1.length) + "   " + quot.toString()
     sList.add(firstLine)
     sList.add(secondLine)
